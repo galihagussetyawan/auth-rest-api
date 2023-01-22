@@ -14,6 +14,7 @@ type userRepository struct {
 }
 
 type UserRepository interface {
+	Save(c context.Context, user models.User) (string, error)
 	GetAll(c context.Context) ([]*models.User, error)
 }
 
@@ -31,4 +32,10 @@ func (r *userRepository) GetAll(c context.Context) ([]*models.User, error) {
 	cursor.All(c, &userList)
 
 	return userList, err
+}
+
+// Save implements UserRepository
+func (r *userRepository) Save(c context.Context, user models.User) (string, error) {
+	_, err := r.c.InsertOne(c, user)
+	return "success to create an account", err
 }
