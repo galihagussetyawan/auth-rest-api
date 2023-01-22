@@ -23,17 +23,15 @@ func ConnectDB() *mongo.Client {
 		log.Fatal("You must set yout 'MONGODB_URI' env")
 	}
 
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(uri))
 	if err != nil {
 		panic(err)
 	}
 
-	defer func() {
-		err := client.Disconnect(context.TODO())
-		if err != nil {
-			panic(err)
-		}
-	}()
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	return client
 }
