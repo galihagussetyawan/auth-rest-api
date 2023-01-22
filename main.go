@@ -13,6 +13,7 @@ func main() {
 
 	//routers
 	routes.UserRoutes(app)
+	routes.AuthRoutes(app)
 
 	app.Listen(":8080")
 }

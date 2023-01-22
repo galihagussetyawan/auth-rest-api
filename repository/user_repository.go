@@ -16,6 +16,7 @@ type userRepository struct {
 type UserRepository interface {
 	Save(c context.Context, user models.User) (string, error)
 	GetAll(c context.Context) ([]*models.User, error)
+	GetUserByEmail(c context.Context, email string) (*models.User, error)
 }
 
 func NewUserRepository() UserRepository {
@@ -38,4 +39,12 @@ func (r *userRepository) GetAll(c context.Context) ([]*models.User, error) {
 func (r *userRepository) Save(c context.Context, user models.User) (string, error) {
 	_, err := r.c.InsertOne(c, user)
 	return "success to create an account", err
+}
+
+// GetUserByEmail implements UserRepository
+func (r *userRepository) GetUserByEmail(c context.Context, email string) (*models.User, error) {
+	result := &models.User{}
+	err := r.c.FindOne(c, bson.M{"email": email}).Decode(&result)
+
+	return result, err
 }
