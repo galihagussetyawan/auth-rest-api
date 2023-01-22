@@ -77,7 +77,6 @@ func Login(c *fiber.Ctx) error {
 		"data": fiber.Map{
 			"access_token":  accessToken,
 			"refresh_token": refreshToken,
-			"token_type":    "bearer",
 		},
 	})
 }
