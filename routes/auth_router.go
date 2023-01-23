@@ -8,8 +8,8 @@ import (
 )
 
 func AuthRoutes(a *fiber.App) {
-	route := a.Group("/api/v1/auth")
+	v1 := a.Group("/api/v1/auth")
 
-	route.Post("/login", handlers.Login)
-	route.Post("/refresh-token", middleware.LoginRequired, handlers.RefreshToken)
+	v1.Post("/login", handlers.Login)
+	v1.Post("/refresh-token", middleware.LoginRequired, handlers.RefreshToken)
 }
