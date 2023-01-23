@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -17,6 +18,7 @@ type UserRepository interface {
 	Save(c context.Context, user models.User) (string, error)
 	GetAll(c context.Context) ([]*models.User, error)
 	GetUserByEmail(c context.Context, email string) (*models.User, error)
+	GetUserById(c context.Context, id string) (*models.User, error)
 }
 
 func NewUserRepository() UserRepository {
@@ -46,5 +48,14 @@ func (r *userRepository) GetUserByEmail(c context.Context, email string) (*model
 	result := &models.User{}
 	err := r.c.FindOne(c, bson.M{"email": email}).Decode(&result)
 
+	return result, err
+}
+
+// GetUserById implements UserRepository
+func (r *userRepository) GetUserById(c context.Context, id string) (*models.User, error) {
+	result := &models.User{}
+	objId, _ := primitive.ObjectIDFromHex(id)
+
+	err := r.c.FindOne(c, bson.M{"_id": objId}).Decode(&result)
 	return result, err
 }

@@ -20,7 +20,7 @@ func createToken(user models.User) string {
 	claims := jwt.MapClaims{}
 	claims["email"] = user.Email
 	claims["id"] = user.ID
-	claims["expires"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	jwt, _ := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -31,7 +31,7 @@ func createRefreshToken(user models.User) string {
 	claims := jwt.MapClaims{}
 	claims["email"] = user.Email
 	claims["id"] = user.ID
-	claims["expires"] = time.Now().Add(time.Hour * 800).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 800).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	jwt, _ := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -66,6 +66,30 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"status_code": fiber.StatusUnauthorized,
 			"message":     "invalid password",
+		})
+	}
+
+	accessToken := createToken(*userData)
+	refreshToken := createRefreshToken(*userData)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status_code": fiber.StatusOK,
+		"data": fiber.Map{
+			"access_token":  accessToken,
+			"refresh_token": refreshToken,
+		},
+	})
+}
+
+func RefreshToken(c *fiber.Ctx) error {
+	userRepo := repository.NewUserRepository()
+	userId := c.Locals("user_id").(string)
+
+	userData, err := userRepo.GetUserById(c.Context(), userId)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"status_code": fiber.StatusNotFound,
+			"message":     err.Error(),
 		})
 	}
 
