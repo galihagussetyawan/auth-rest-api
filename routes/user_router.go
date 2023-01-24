@@ -7,7 +7,7 @@ import (
 )
 
 func UserRoutes(a *fiber.App) {
-	route := a.Group("/api/v1")
+	v1 := a.Group("/api/v1")
 
-	route.Post("/user", handlers.CreateUser)
+	v1.Post("/user", handlers.CreateUser)
 }
