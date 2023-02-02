@@ -41,3 +41,8 @@ Content-Type: application/json
   "status_code": 201
 }
 ```
+Possible errors:
+
+| Error Code | Description |
+| -----------| ----------- |
+| 400 Bad Request | Required fields were invalid, not specifiead. |
