@@ -45,4 +45,4 @@ Possible errors:
 
 | Error Code | Description |
 | -----------| ----------- |
-| 400 Bad Request | Required fields were invalid, not specifiead. |
+| 400 Bad Request | Required fields were invalid, not specified. |
